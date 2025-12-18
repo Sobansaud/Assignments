@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soban Saud Form</title>
+</head>
+
+<body>
+
+    <h1>Registration Form</h1>
+
+    <form action="">
+        <!-- Name Field -->
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required><br><br>
+
+        <!-- Email Field -->
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required><br><br>
+
+        <!-- Phone Field -->
+        <label for="phone">Phone:</label><br>
+        <input type="tel" id="phone" name="phone" placeholder="Enter phone number"><br><br>
+
+        <!-- Password Field -->
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" placeholder="Enter password" required><br><br>
+
+        <!-- Gender Field using <select> as requested -->
+        <label for="gender">Gender:</label><br>
+        <select id="gender" name="gender">
+            <option value="" disabled selected>Select your gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select><br><br>
+
+        <!-- Submit Button -->
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+
+</html>

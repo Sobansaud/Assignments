@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soban Saud Schedule</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        table {
+            border-collapse: collapse;
+            /* Ensures borders are shared */
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            border: 3px double #808080;
+            /* Double border style like the image */
+            padding: 8px 15px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* Specific Styles to match image */
+        .header-blank {
+            border: 3px double #808080;
+        }
+
+        .bg-yellow {
+            background-color: #ffffcc;
+        }
+
+        .bg-purple {
+            background-color: #ccccff;
+        }
+
+        .bg-green {
+            background-color: #ccffcc;
+        }
+
+        th {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <table>
+        <!-- Header Row 1 -->
+        <tr>
+            <th class="header-blank"></th> <!-- Empty top-left cell -->
+            <th colspan="3">Seminar</th>
+        </tr>
+
+        <!-- Header Row 2 -->
+        <tr>
+            <th rowspan="2">Day</th>
+            <th colspan="2">Schedule</th>
+            <th rowspan="2">Topic</th>
+        </tr>
+
+        <!-- Header Row 3 -->
+        <tr>
+            <th>Begin</th>
+            <th>End</th>
+        </tr>
+
+        <!-- Monday -->
+        <tr>
+            <td rowspan="2">Monday</td>
+            <td rowspan="2" class="bg-yellow">8:00 a.m.</td>
+            <td rowspan="2" class="bg-purple">5:00 p.m.</td>
+            <td>Introduction to XML</td>
+        </tr>
+        <tr>
+            <td>Validity: DTD and Relax NG</td>
+        </tr>
+
+        <!-- Tuesday -->
+        <tr>
+            <td rowspan="3">Tuesday</td>
+            <td class="bg-yellow">8:00 a.m.</td>
+            <td class="bg-yellow">11:00 a.m.</td>
+            <td rowspan="2">XPath</td>
+        </tr>
+        <tr>
+            <td class="bg-yellow">11:00 a.m.</td>
+            <td class="bg-green">2:00 p.m.</td>
+        </tr>
+        <tr>
+            <td class="bg-green">2:00 p.m.</td>
+            <td class="bg-purple">5:00 p.m.</td>
+            <td>XSL Transformations</td>
+        </tr>
+
+        <!-- Wednesday -->
+        <tr>
+            <td>Wednesday</td>
+            <td class="bg-yellow">8:00 a.m.</td>
+            <td class="bg-green">12:00 p.m.</td>
+            <td>XSL Formatting Objects</td>
+        </tr>
+    </table>
+
+</body>
+
+</html>

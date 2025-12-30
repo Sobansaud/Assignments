@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator | Soban Saud</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --calculator-bg: rgba(255, 255, 255, 0.1);
+            --btn-bg: rgba(255, 255, 255, 0.2);
+            --btn-hover: rgba(255, 255, 255, 0.3);
+            --text-color: #ffffff;
+            --display-bg: rgba(0, 0, 0, 0.2);
+            --accent-color: #ff9966;
+            --operator-color: #ff5e62;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .calculator {
+            background: var(--calculator-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 320px;
+        }
+
+        .display-screen {
+            background: var(--display-bg);
+            width: 100%;
+            height: 100px;
+            /* Reduced from 180px */
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: right;
+            padding: 15px;
+            /* Reduced from 20px */
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            word-wrap: break-word;
+        }
+
+        #history {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            min-height: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        #result {
+            font-size: 2.5rem;
+            /* Reduced from 3rem */
+            font-weight: 600;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--btn-bg);
+            color: var(--text-color);
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background: var(--btn-hover);
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-operator {
+            color: var(--accent-color);
+            font-size: 1.4rem;
+        }
+
+        .btn-equals {
+            grid-column: span 2;
+            background: var(--operator-color);
+            color: white;
+        }
+
+        .btn-equals:hover {
+            background: #ff474b;
+        }
+
+        .btn-clear {
+            color: #ff5e62;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 15px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="calculator">
+        <div class="display-screen">
+            <div id="history"></div>
+            <div id="result">0</div>
+        </div>
+
+        <div class="buttons-grid">
+            <button class="btn-clear" onclick="clearDisplay()">AC</button>
+            <button class="btn-clear" onclick="deleteLast()">DEL</button>
+            <button class="btn-operator" onclick="appendOperator('%')">%</button>
+            <button class="btn-operator" onclick="appendOperator('/')">÷</button>
+
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="btn-operator" onclick="appendOperator('*')">×</button>
+
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="btn-operator" onclick="appendOperator('-')">-</button>
+
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="btn-operator" onclick="appendOperator('+')">+</button>
+
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="btn-equals" onclick="calculate()">=</button>
+        </div>
+        <div class="footer">
+            Designed by Soban Saud
+        </div>
+    </div>
+
+    <script>
+        let currentInput = '';
+        let history = '';
+        const resultDisplay = document.getElementById('result');
+        const historyDisplay = document.getElementById('history');
+
+        function updateDisplay() {
+            resultDisplay.textContent = currentInput || '0';
+            historyDisplay.textContent = history;
+        }
+
+        function appendNumber(number) {
+            if (number === '.' && currentInput.includes('.')) return;
+            if (currentInput === '0' && number !== '.') {
+                currentInput = number;
+            } else {
+                currentInput += number;
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(operator) {
+            if (currentInput === '' && history === '') return;
+
+            // If there's a current input, move it to history with operator
+            if (currentInput !== '') {
+                history += currentInput + ' ' + operator + ' ';
+                currentInput = '';
+            } else if (history !== '') {
+                // If switching operator
+                history = history.trim().slice(0, -1) + operator + ' ';
+            }
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = '';
+            history = '';
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            currentInput = currentInput.slice(0, -1);
+            updateDisplay();
+        }
+
+        function calculate() {
+            if (currentInput === '' && history === '') return;
+
+            let expression = history + currentInput;
+            // Clean up visual operators for JS
+            expression = expression.replace(/×/g, '*').replace(/÷/g, '/');
+
+            try {
+                // Use Function constructor for safer eval strictness, though for a simple calc eval is okay-ish
+                // But for security good habits, let's just use eval with basic sanitation or simple Function
+                // For this assignment, eval is standard practice for beginners.
+                const result = eval(expression);
+
+                // Format result to avoid long decimals
+                let formattedResult = Number(result.toFixed(8)).toString();
+
+                currentInput = formattedResult;
+                history = '';
+                updateDisplay();
+            } catch (error) {
+                currentInput = 'Error';
+                history = '';
+                updateDisplay();
+                setTimeout(clearDisplay, 1500);
+            }
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', (event) => {
+            const key = event.key;
+            if (/[0-9]/.test(key)) appendNumber(key);
+            if (['+', '-', '*', '/'].includes(key)) appendOperator(key);
+            if (key === 'Enter') calculate();
+            if (key === 'Backspace') deleteLast();
+            if (key === 'Escape') clearDisplay();
+            if (key === '.') appendNumber('.');
+        });
+
+    </script>
+</body>
+
+</html>

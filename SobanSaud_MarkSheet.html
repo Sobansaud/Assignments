@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Sheet Generator | Soban Saud</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --card-bg: #fff;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .content {
+            padding: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .result-section {
+            flex: 1;
+            min-width: 300px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            display: none;
+            /* Hidden by default */
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+
+        .subject-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .subject-name {
+            width: 100px;
+            font-weight: 600;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
+        }
+
+        /* Result Styles */
+        .result-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .result-row.total {
+            border-top: 2px solid #ddd;
+            padding-top: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        .grade-A-plus {
+            background-color: #2ecc71;
+        }
+
+        .grade-A {
+            background-color: #3498db;
+        }
+
+        .grade-B {
+            background-color: #f1c40f;
+        }
+
+        .grade-C {
+            background-color: #e67e22;
+        }
+
+        .grade-F {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Student Mark Sheet</h1>
+            <p>Enter obtained marks for each subject (Out of 100)</p>
+        </div>
+
+        <div class="content">
+            <div class="input-section">
+                <div class="form-group subject-row">
+                    <span class="subject-name">English</span>
+                    <input type="number" id="english" min="0" max="100" placeholder="0-100">
+                </div>
+                <div class="form-group subject-row">
+                    <span class="subject-name">Urdu</span>
+                    <input type="number" id="urdu" min="0" max="100" placeholder="0-100">
+                </div>
+                <div class="form-group subject-row">
+                    <span class="subject-name">Math</span>
+                    <input type="number" id="math" min="0" max="100" placeholder="0-100">
+                </div>
+                <div class="form-group subject-row">
+                    <span class="subject-name">Science</span>
+                    <input type="number" id="science" min="0" max="100" placeholder="0-100">
+                </div>
+                <div class="form-group subject-row">
+                    <span class="subject-name">Computer</span>
+                    <input type="number" id="computer" min="0" max="100" placeholder="0-100">
+                </div>
+
+                <button onclick="generateMarkSheet()">Generate Result</button>
+            </div>
+
+            <div class="result-section" id="resultSection">
+                <div class="result-header">
+                    <h2>Result Summary</h2>
+                </div>
+
+                <div class="result-row"><span>Total Marks:</span> <span>500</span></div>
+                <div class="result-row"><span>Obtained Marks:</span> <span id="obtainedMarks">0</span></div>
+                <div class="result-row"><span>Percentage:</span> <span id="percentage">0%</span></div>
+                <div class="result-row total">
+                    <span>Grade:</span>
+                    <span id="grade"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateMarkSheet() {
+            // Get values
+            const subjects = ['english', 'urdu', 'math', 'science', 'computer'];
+            let totalObtained = 0;
+            let isValid = true;
+
+            for (let sub of subjects) {
+                const val = parseFloat(document.getElementById(sub).value);
+                if (isNaN(val) || val < 0 || val > 100) {
+                    alert(`Please enter valid marks for ${sub} (0-100).`);
+                    isValid = false;
+                    return; // Stop if invalid
+                }
+                totalObtained += val;
+            }
+
+            if (!isValid) return;
+
+            const totalMarks = 500;
+            const percentage = (totalObtained / totalMarks) * 100;
+            let grade = '';
+            let gradeClass = '';
+
+            if (percentage >= 80) {
+                grade = 'A+';
+                gradeClass = 'grade-A-plus';
+            } else if (percentage >= 70) {
+                grade = 'A';
+                gradeClass = 'grade-A';
+            } else if (percentage >= 60) {
+                grade = 'B';
+                gradeClass = 'grade-B';
+            } else if (percentage >= 50) {
+                grade = 'C';
+                gradeClass = 'grade-C';
+            } else {
+                grade = 'Fail';
+                gradeClass = 'grade-F';
+            }
+
+            // Update DOM
+            document.getElementById('obtainedMarks').textContent = totalObtained;
+            document.getElementById('percentage').textContent = percentage.toFixed(2) + '%';
+
+            const gradeSpan = document.getElementById('grade');
+            gradeSpan.textContent = grade;
+            gradeSpan.className = 'grade-badge ' + gradeClass;
+
+            const resultSection = document.getElementById('resultSection');
+            resultSection.style.display = 'flex';
+        }
+    </script>
+</body>
+
+</html>

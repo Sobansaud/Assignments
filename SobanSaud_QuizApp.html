@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Dev Pro Quiz | Muhammad Soban Saud</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #a3e635;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+            --error: #ef4444;
+            --glass: rgba(30, 41, 59, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(225, 39%, 30%, 1) 0, transparent 50%);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .main-card {
+            width: 100%;
+            max-width: 650px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Screen Transitions */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Welcome Screen Styling */
+        .welcome-screen {
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .input-box {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            margin: 20px 0;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-box:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.02);
+        }
+
+        /* Quiz Header Styling */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .timer {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #timer-sec {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            transition: width 0.4s cubic-bezier(0.1, 0.8, 0.1, 1);
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--primary);
+        }
+
+        .option.correct {
+            background: var(--success);
+            border-color: transparent;
+        }
+
+        .option.wrong {
+            background: var(--error);
+            border-color: transparent;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* Result Screen Styling */
+        .result-screen {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .final-score {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .status-text {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        footer {
+            margin-top: 40px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        footer strong {
+            color: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-card">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active welcome-screen">
+            <div class="logo">DevQuiz</div>
+            <h1>Master Web Development</h1>
+            <p style="color: var(--text-muted); margin-top: 10px;">Test your HTML, CSS, and JS skills.</p>
+            <input type="text" id="user-name" class="input-box" placeholder="Enter your developer name..."
+                autocomplete="off">
+            <button class="btn" onclick="startQuiz()">Initialize Engine</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="screen">
+            <div class="quiz-header">
+                <span id="question-counter">Question 1/10</span>
+                <div class="timer">
+                    <span>⏳</span>
+                    <span id="timer-sec">15</span>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <div id="question-container">
+                <h2 id="question-text" class="question-text">Loading question...</h2>
+                <div class="options-grid" id="options-grid">
+                    <!-- Options inject here -->
+                </div>
+            </div>
+            <button id="next-btn" class="btn" style="margin-top: 25px; display: none;" onclick="showNextQuestion()">Next
+                Pulse</button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="screen result-screen">
+            <h2 id="congrats-text">Result Analysis</h2>
+            <div class="score-circle">
+                <span class="final-score" id="final-score">0</span>
+                <span style="font-size: 0.8rem; font-weight: 600;">POINTS</span>
+            </div>
+            <p class="status-text" id="status-text">Performance: Unranked</p>
+            <button class="btn" onclick="location.reload()">Reboot Session</button>
+        </div>
+    </div>
+
+    <footer>Made by <strong>Muhammad Soban Saud</strong></footer>
+
+    <script>
+        const questionsDatabase = [
+            // HTML Questions
+            { q: "What does HTML stand for?", options: ["Hyper Text Markup Language", "High Tech Modern Language", "Hyperlink and Text Management", "Home Tool Markup Language"], correct: 0 },
+            { q: "Which HTML element is used for the largest heading?", options: ["<heading>", "<h6>", "<h1>", "<head>"], correct: 2 },
+            { q: "What is the correct HTML element for inserting a line break?", options: ["<lb>", "<break>", "<br>", "<hr>"], correct: 2 },
+            { q: "Which attribute is used to specify a unique identifier for an element?", options: ["class", "id", "name", "style"], correct: 1 },
+            { q: "What is the correct HTML for creating a hyperlink?", options: ["<a>http://google.com</a>", "<a href='http://google.com'>Google</a>", "<a name='http://google.com'>Google</a>", "<link>http://google.com</link>"], correct: 1 },
+            { q: "Which character is used to indicate an end tag?", options: ["*", "<", "/", "^"], correct: 2 },
+            { q: "How can you make a numbered list?", options: ["<list>", "<ul>", "<ol>", "<dl>"], correct: 2 },
+            { q: "What is the correct HTML for making a checkbox?", options: ["<check>", "<input type='check'>", "<input type='checkbox'>", "<checkbox>"], correct: 2 },
+            { q: "Which HTML element defines navigation links?", options: ["<nav>", "<navigate>", "<bar>", "<links>"], correct: 0 },
+            { q: "Which HTML element is used to specify a footer for a document or section?", options: ["<bottom>", "<footer>", "<section>", "<aside>"], correct: 1 },
+            { q: "What is the correct HTML for inserting an image?", options: ["<image src='img.jpg'>", "<img alt='myImage'>img.jpg</img>", "<img src='img.jpg'>", "<img href='img.jpg'>"], correct: 2 },
+            { q: "Which HTML element is used to define semantic important text?", options: ["<important>", "<strong>", "<b>", "<i>"], correct: 1 },
+            { q: "What does the <iframe> element do?", options: ["Displays an image", "Displays a video", "Displays a web page within a web page", "Connects to a database"], correct: 2 },
+            { q: "Which doctype is correct for HTML5?", options: ["<!DOCTYPE html>", "<!DOCTYPE HTML5>", "<!DOCTYPE HTML PUBLIC...>", "<html>"], correct: 0 },
+            { q: "Which HTML element is used to define a container for an SVG image?", options: ["<svg>", "<container>", "<image>", "<canvas>"], correct: 0 },
+
+            // CSS Questions
+            { q: "What does CSS stand for?", options: ["Colorful Style Sheets", "Cascading Style Sheets", "Creative Style Sheets", "Computer Style Sheets"], correct: 1 },
+            { q: "Which HTML attribute is used to define inline styles?", options: ["font", "class", "style", "styles"], correct: 2 },
+            { q: "How do you insert a comment in a CSS file?", options: ["// this is a comment", "/* this is a comment */", "' this is a comment", "// this is a comment //"], correct: 1 },
+            { q: "Which property is used to change the background color?", options: ["color", "background-color", "bgcolor", "fill"], correct: 1 },
+            { q: "How do you add a background color for all <h1> elements?", options: ["h1.all {background-color:#FFFFFF;}", "all.h1 {background-color:#FFFFFF;}", "h1 {background-color:#FFFFFF;}", "h1 {bg-color:#FFFFFF;}"], correct: 2 },
+            { q: "Which CSS property is used to change the text color of an element?", options: ["text-color", "color", "fgcolor", "font-color"], correct: 1 },
+            { q: "Which CSS property controls the text size?", options: ["font-style", "text-size", "font-size", "text-style"], correct: 2 },
+            { q: "What is the correct CSS syntax for making all the <p> elements bold?", options: ["p {font-weight:bold;}", "p {text-size:bold;}", "<p style='font-size:bold;'>", "p {font-style:bold;}"], correct: 0 },
+            { q: "How do you display hyperlinks without an underline?", options: ["a {text-decoration:none;}", "a {underline:none;}", "a {decoration:no-underline;}", "a {text-style:no-underline;}"], correct: 0 },
+            { q: "Which property is used to change the font of an element?", options: ["font-style", "font-weight", "font-family", "font-type"], correct: 2 },
+            { q: "How do you make a list that lists its items with squares?", options: ["list-style-type: square;", "list-type: square;", "type: square;", "list: square;"], correct: 0 },
+            { q: "Which property is used to change the left margin of an element?", options: ["padding-left", "indent", "margin-left", "left-margin"], correct: 2 },
+            { q: "When using the padding property; are you allowed to use negative values?", options: ["No", "Yes", "Only in Firefox", "Only in Chrome"], correct: 0 },
+            { q: "How do you make the text scroll horizontally?", options: ["overflow-x: scroll;", "text-overflow: scroll;", "scrolling: horizontal;", "display: scroll;"], correct: 0 },
+            { q: "Which CSS property is used to stack elements along the Z-axis?", options: ["z-index", "stack-order", "depth", "layer"], correct: 0 },
+            { q: "What is the default value of the position property?", options: ["relative", "fixed", "absolute", "static"], correct: 3 },
+            { q: "Which property is used to set the spacing between lines of text?", options: ["line-height", "spacing", "text-spacing", "line-spacing"], correct: 0 },
+
+            // JS Questions
+            { q: "Inside which HTML element do we put the JavaScript code?", options: ["<js>", "<scripting>", "<script>", "<javascript>"], correct: 2 },
+            { q: "How do you write 'Hello World' in an alert box?", options: ["msg('Hello World');", "alertBox('Hello World');", "alert('Hello World');", "msgBox('Hello World');"], correct: 2 },
+            { q: "How do you create a function in JavaScript?", options: ["function:myFunction()", "function myFunction()", "function = myFunction()", "new.function()"], correct: 1 },
+            { q: "How do you call a function named 'myFunction'?", options: ["call myFunction()", "myFunction()", "call function myFunction()", "run myFunction()"], correct: 1 },
+            { q: "How to write an IF statement in JavaScript?", options: ["if i = 5 then", "if i == 5 then", "if (i == 5)", "if i = 5"], correct: 2 },
+            { q: "How to write an IF statement for executing some code if 'i' is NOT equal to 5?", options: ["if (i <> 5)", "if i =! 5 then", "if (i != 5)", "if i != 5 then"], correct: 2 },
+            { q: "How does a WHILE loop start?", options: ["while (i <= 10; i++)", "while (i <= 10)", "while i = 1 to 10", "loop (i <= 10)"], correct: 1 },
+            { q: "How can you add a comment in JavaScript?", options: ["' This is a comment", "<!-- This is a comment -->", "// This is a comment", "** This is a comment"], correct: 2 },
+            { q: "What is the correct way to write a JavaScript array?", options: ["var colors = (1:'red', 2:'blue')", "var colors = ['red', 'green', 'blue']", "var colors = 'red', 'blue'", "var colors = 1=('red'), 2=('blue')"], correct: 1 },
+            { q: "How do you round the number 7.25, to the nearest integer?", options: ["Math.rnd(7.25)", "round(7.25)", "Math.round(7.25)", "rnd(7.25)"], correct: 2 },
+            { q: "How do you find the number with the highest value of x and y?", options: ["top(x, y)", "Math.max(x, y)", "ceil(x, y)", "Math.ceil(x, y)"], correct: 1 },
+            { q: "Which event occurs when the user clicks on an HTML element?", options: ["onmouseclick", "onchange", "onclick", "onmouseover"], correct: 2 },
+            { q: "How do you declare a JavaScript variable?", options: ["v carName;", "variable carName;", "var carName;", "declare carName;"], correct: 2 },
+            { q: "Which operator is used to assign a value to a variable?", options: ["*", "-", "=", "x"], correct: 2 },
+            { q: "What will \u2018typeof [1,2,3]\u2019 return?", options: ["array", "list", "object", "undefined"], correct: 2 },
+            { q: "Which method adds a new element to the end of an array?", options: ["push()", "pop()", "shift()", "unshift()"], correct: 0 },
+            { q: "What is the correct syntax for referring to an external script called 'app.js'?", options: ["<script href='app.js'>", "<script src='app.js'>", "<script name='app.js'>", "<script value='app.js'>"], correct: 1 },
+            { q: "Which values are falsy in JavaScript?", options: ["0, '', null, undefined, NaN", "[], {}, true", "1, 'hello'", "All of the above"], correct: 0 }
+        ];
+
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 15;
+        let userName = "";
+
+        // Fisher-Yates Shuffle Algorithm
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            userName = document.getElementById('user-name').value.trim();
+            if (!userName) {
+                alert("Please enter your name to initialize!");
+                return;
+            }
+
+            // Shuffle entire database and take 10 random questions
+            const shuffledDb = shuffle([...questionsDatabase]);
+            questions = shuffledDb.slice(0, 10);
+
+            currentQuestionIndex = 0;
+            score = 0;
+
+            document.getElementById('welcome-screen').classList.remove('active');
+            document.getElementById('quiz-screen').classList.add('active');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            resetState();
+            const currentQ = questions[currentQuestionIndex];
+            document.getElementById('question-text').innerText = currentQ.q;
+            document.getElementById('question-counter').innerText = `Question ${currentQuestionIndex + 1}/${questions.length}`;
+
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+
+            const optionsGrid = document.getElementById('options-grid');
+
+            // Randomize options order as well
+            const opts = currentQ.options.map((text, index) => ({ text, isCorrect: index === currentQ.correct }));
+            shuffle(opts);
+
+            opts.forEach((option) => {
+                const optDiv = document.createElement('div');
+                optDiv.className = 'option';
+                optDiv.innerHTML = `<span>${option.text}</span>`;
+                optDiv.onclick = () => selectOption(option.isCorrect, optDiv);
+                optionsGrid.appendChild(optDiv);
+            });
+
+            startTimer();
+        }
+
+        function resetState() {
+            clearInterval(timer);
+            timeLeft = 15;
+            document.getElementById('timer-sec').innerText = timeLeft;
+            document.getElementById('options-grid').innerHTML = '';
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-sec').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    selectOption(false); // Auto-fail
+                }
+            }, 1000);
+        }
+
+        function selectOption(isCorrect, element) {
+            clearInterval(timer);
+            const currentQ = questions[currentQuestionIndex];
+            const allOptions = document.querySelectorAll('.option');
+
+            allOptions.forEach(opt => opt.classList.add('disabled'));
+
+            if (isCorrect) {
+                if (element) element.classList.add('correct');
+                score += (10 + timeLeft); // Bonus for speed
+            } else {
+                if (element) element.classList.add('wrong');
+                // Find and highlight correct answer
+                allOptions.forEach(opt => {
+                    // Logic to find correct one based on text if needed, 
+                    // or just use the mapped index from earlier.
+                    // Simplified: just show which one was correct.
+                });
+            }
+
+            document.getElementById('next-btn').style.display = 'block';
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('next-btn').innerText = "Run Final Analysis";
+            }
+        }
+
+        function showNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            document.getElementById('final-score').innerText = score;
+
+            let status = "";
+            if (score > 200) status = "Full Stack Grandmaster";
+            else if (score > 150) status = "Logic Ninja";
+            else if (score > 100) status = "Junior Developer";
+            else status = "Bug Reporter (Keep Learning!)";
+
+            document.getElementById('congrats-text').innerText = `Pulse Complete, ${userName}!`;
+            document.getElementById('status-text').innerText = `Performance: ${status}`;
+        }
+    </script>
+
+</body>
+
+</html>

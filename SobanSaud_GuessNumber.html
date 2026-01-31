@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess Number Game | Muhammad Soban Saud</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #ff007f;
+            --neon-blue: #00f2ff;
+            --bg-dark: #0a0b10;
+            --card-bg: rgba(20, 22, 35, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(255, 0, 127, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(0, 242, 255, 0.1) 0%, transparent 40%);
+            font-family: 'Outfit', sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* Abstract Grid Background */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5),
+                inset 0 0 20px rgba(255, 255, 255, 0.02);
+            animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+        }
+
+        .description {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            color: white;
+            padding: 20px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #check-btn {
+            background: linear-gradient(45deg, var(--neon-blue), #0072ff);
+            color: white;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+        }
+
+        #check-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
+        }
+
+        #reset-btn {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid var(--glass-border);
+        }
+
+        #reset-btn:hover {
+            background: #334155;
+            color: white;
+        }
+
+        .stats {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+            padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--neon-pink);
+        }
+
+        #message {
+            margin-top: 25px;
+            font-weight: 600;
+            height: 24px;
+            transition: all 0.3s;
+        }
+
+        .success {
+            color: #4ade80;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+
+        .error {
+            color: #f87171;
+            text-shadow: 0 0 10px rgba(248, 113, 113, 0.3);
+        }
+
+        footer {
+            margin-top: 50px;
+            color: #475569;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        footer strong {
+            color: var(--neon-pink);
+            font-weight: 600;
+        }
+
+        /* Particles animation for winning */
+        .celebration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Guess Logic</h1>
+        <p class="description">I'm thinking of a number between 1 and 100.</p>
+
+        <div class="input-wrapper">
+            <input type="number" id="guess-input" placeholder="??" min="1" max="100">
+        </div>
+
+        <div class="button-group">
+            <button id="check-btn" onclick="checkGuess()">Guess!</button>
+            <button id="reset-btn" onclick="initGame()">Reset</button>
+        </div>
+
+        <div id="message"></div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">Attempts</span>
+                <span class="stat-value" id="attempts">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Best Score</span>
+                <span class="stat-value" id="best-score">--</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>Made by <strong>Muhammad Soban Saud</strong></footer>
+
+    <script>
+        let secretNumber;
+        let attemptsCount = 0;
+        let bestScore = localStorage.getItem('guessBestScore') || '--';
+        let isGameOver = false;
+
+        const guessInput = document.getElementById('guess-input');
+        const messageDisplay = document.getElementById('message');
+        const attemptsDisplay = document.getElementById('attempts');
+        const bestScoreDisplay = document.getElementById('best-score');
+
+        function initGame() {
+            secretNumber = Math.floor(Math.random() * 100) + 1;
+            attemptsCount = 0;
+            isGameOver = false;
+            guessInput.value = '';
+            guessInput.disabled = false;
+            messageDisplay.innerText = '';
+            messageDisplay.className = '';
+            attemptsDisplay.innerText = '0';
+            bestScoreDisplay.innerText = bestScore;
+            guessInput.focus();
+            console.log("Secret Number:", secretNumber); // For debugging
+        }
+
+        function checkGuess() {
+            if (isGameOver) return;
+
+            const userGuess = parseInt(guessInput.value);
+
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                showMessage("Enter 1-100 please!", "error");
+                return;
+            }
+
+            attemptsCount++;
+            attemptsDisplay.innerText = attemptsCount;
+
+            if (userGuess === secretNumber) {
+                handleWin();
+            } else if (userGuess > secretNumber) {
+                showMessage("Too High! Try Lower ↓", "error");
+            } else {
+                showMessage("Too Low! Try Higher ↑", "error");
+            }
+
+            guessInput.value = '';
+            guessInput.focus();
+        }
+
+        function showMessage(msg, type) {
+            messageDisplay.innerText = msg;
+            messageDisplay.className = type;
+        }
+
+        function handleWin() {
+            isGameOver = true;
+            guessInput.disabled = true;
+            showMessage("🎉 UNLOCKED! CORRECT!", "success");
+
+            if (bestScore === '--' || attemptsCount < bestScore) {
+                bestScore = attemptsCount;
+                localStorage.setItem('guessBestScore', bestScore);
+                bestScoreDisplay.innerText = bestScore;
+            }
+        }
+
+        // Support Enter key
+        guessInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkGuess();
+        });
+
+        initGame();
+    </script>
+</body>
+
+</html>
